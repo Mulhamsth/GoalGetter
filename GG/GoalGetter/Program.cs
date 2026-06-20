@@ -27,32 +27,36 @@ builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddSingleton<UserAccountService>();
 
-builder.Services.AddSingleton<IProjectsRepository, ProjectsRepository>();
+// Scoped = one instance per Blazor circuit (per visitor session). Each visitor gets
+// their own in-memory copy of the seed data, so edits stay isolated and reset when the
+// session ends. Every use case below depends on this repository, so they are scoped too
+// (a singleton holding a scoped repo would capture one shared instance and break isolation).
+builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
 
 //Project
-builder.Services.AddTransient<IViewProjectsByNameUseCase, ViewProjectsByNameUseCase>();
-builder.Services.AddTransient<IAddProjectUseCase, AddProjectUseCase>();
-builder.Services.AddTransient<IViewProjectByIdUseCase, ViewProjectByIdUseCase>();
-builder.Services.AddSingleton<IUpdateProjectUseCase, UpdateProjectUseCase>();
-builder.Services.AddSingleton<IGetProgressChartUseCase, GetProgressChartUseCase>();
+builder.Services.AddScoped<IViewProjectsByNameUseCase, ViewProjectsByNameUseCase>();
+builder.Services.AddScoped<IAddProjectUseCase, AddProjectUseCase>();
+builder.Services.AddScoped<IViewProjectByIdUseCase, ViewProjectByIdUseCase>();
+builder.Services.AddScoped<IUpdateProjectUseCase, UpdateProjectUseCase>();
+builder.Services.AddScoped<IGetProgressChartUseCase, GetProgressChartUseCase>();
 
 //people
-builder.Services.AddTransient<IViewPeopleByNameUseCase, ViewPeopleByNameUseCase>();
-builder.Services.AddTransient<IAddPersonUseCase, AddPersonUseCase>();
-builder.Services.AddSingleton<IDeletePersonUseCase, DeletePersonUseCase>();
+builder.Services.AddScoped<IViewPeopleByNameUseCase, ViewPeopleByNameUseCase>();
+builder.Services.AddScoped<IAddPersonUseCase, AddPersonUseCase>();
+builder.Services.AddScoped<IDeletePersonUseCase, DeletePersonUseCase>();
 
 // Team Services
-builder.Services.AddTransient<IViewTeamMembersByProjectIdUseCase, ViewTeamMembersByProjectIdUseCase>();
-builder.Services.AddTransient<IViewPeopleIfNotInTeamUseCase, ViewPeopleIfNotInTeamUseCase>();
-builder.Services.AddTransient<IAddTeamUseCase, AddTeamUseCase>();
-builder.Services.AddSingleton<IRemoveTeammemberFromTeamUseCase, RemoveTeammemberFromTeamUseCase>();
+builder.Services.AddScoped<IViewTeamMembersByProjectIdUseCase, ViewTeamMembersByProjectIdUseCase>();
+builder.Services.AddScoped<IViewPeopleIfNotInTeamUseCase, ViewPeopleIfNotInTeamUseCase>();
+builder.Services.AddScoped<IAddTeamUseCase, AddTeamUseCase>();
+builder.Services.AddScoped<IRemoveTeammemberFromTeamUseCase, RemoveTeammemberFromTeamUseCase>();
 
 //Taks Services
-builder.Services.AddTransient<IViewTasksByProjectIdUseCase, ViewTasksByProjectIdUseCase>();
-builder.Services.AddTransient<IAddTaskUseCase, AddTaskUseCase>();
-builder.Services.AddSingleton<IUpdateTaskUseCase, UpdateTaskUseCase>();
-builder.Services.AddSingleton<IRemoveTaskUseCase, RemoveTaskUseCase>();
-builder.Services.AddSingleton<IRemoveProjectUseCase, RemoveProjectUseCase>();
+builder.Services.AddScoped<IViewTasksByProjectIdUseCase, ViewTasksByProjectIdUseCase>();
+builder.Services.AddScoped<IAddTaskUseCase, AddTaskUseCase>();
+builder.Services.AddScoped<IUpdateTaskUseCase, UpdateTaskUseCase>();
+builder.Services.AddScoped<IRemoveTaskUseCase, RemoveTaskUseCase>();
+builder.Services.AddScoped<IRemoveProjectUseCase, RemoveProjectUseCase>();
 
 builder.Services.AddMudServices();
 

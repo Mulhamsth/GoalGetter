@@ -461,53 +461,30 @@ namespace GG.Plugins.InMemory
 
 		public async Task<StatusReport<string>> SaveFileToServer(string fileDir, string fileName, IBrowserFile file)
 		{
-			string wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-			string directory = Path.Combine(wwwrootPath, fileDir);
-			string filePath = Path.Combine(directory, fileName);
-
-			//ensure Directory exists
-			if (!Directory.Exists(directory))
-				Directory.CreateDirectory(directory);
-
-			//overwrite Profile Picture
-			if(File.Exists(filePath))
-				File.Delete(filePath);
-
-			using (var stream = new FileStream(filePath, FileMode.Create))
-			{
-				await file.OpenReadStream().CopyToAsync(stream);
-			}
+			// In-memory sandbox: uploads are NOT written to disk (that would leak across
+			// sessions and modify the shared seed). Encode the image as a data URI that
+			// lives only in this session's in-memory Person and disappears when it ends.
+			using var ms = new MemoryStream();
+			await file.OpenReadStream(5 * 1024 * 1024).CopyToAsync(ms);
+			string dataUri = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
 
 			return new StatusReport<string>(
 							StatusState.Success,
-							Path.Combine(fileDir, fileName),
-							$"File was successfully uploaded"
+							dataUri,
+							$"File was processed (in-memory)"
 						);
 		}
 
 		public async Task<StatusReport<EmptyVal>> SaveTextToFile(string fileDir, string fileName, string text)
 		{
-			string directory = Path.Combine(Directory.GetCurrentDirectory(), fileDir);
-			string filePath = Path.Combine(directory, fileName);
-
-			//ensure Directory exists
-			if (!Directory.Exists(directory))
-				Directory.CreateDirectory(directory);
-
-			//ensure File exists
-			if(!File.Exists(filePath))
-				File.Create(filePath).Close();
-
-			using (var sw = new StreamWriter(filePath, false))
-			{
-				await sw.WriteLineAsync(text);
-			}
-
-			return new StatusReport<EmptyVal>(
+			// In-memory sandbox: persistence is disabled so each visitor session stays
+			// isolated and the dummy seed data on disk is never modified. All entity
+			// changes live in the in-memory Projects/Contact lists for the session only.
+			return await Task.FromResult(new StatusReport<EmptyVal>(
 							StatusState.Success,
 							EmptyVal.Empty,
-							$"File has been saved"
-						);
+							$"Saved (in-memory)"
+						));
 		}
 
 		public async Task<StatusReport<string>> ReadTextFromFile(string fileDir, string fileName)
@@ -573,24 +550,13 @@ namespace GG.Plugins.InMemory
 
 		public async Task<StatusReport<EmptyVal>> DeleteFile(string fileDir, string fileName)
 		{
-			string directory = Path.Combine(Directory.GetCurrentDirectory(), fileDir);
-			string filePath = Path.Combine(directory, fileName);
-
-			if (!File.Exists(filePath))
-			{
-				return new StatusReport<EmptyVal>(
-								StatusState.Error,
-								EmptyVal.Empty,
-								$"File does not exist"
-							);
-			}
-			File.Delete(filePath);
-
-			return new StatusReport<EmptyVal>(
+			// In-memory sandbox: nothing is persisted to disk, so there is nothing to
+			// delete. The entity has already been removed from the in-memory list.
+			return await Task.FromResult(new StatusReport<EmptyVal>(
 								StatusState.Success,
 								EmptyVal.Empty,
-								$"File has been deleted"
-							);
+								$"Deleted (in-memory)"
+							));
 		}
 
 		public async Task<StatusReport<EmptyVal>> LoadData()

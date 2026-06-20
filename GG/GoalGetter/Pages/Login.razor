@@ -20,6 +20,11 @@
 							  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
 				<MudTextField @bind-Value="tmpusr.Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput"
 							  Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password" />
+
+				<MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true" Class="mt-4">
+					<MudText Typo="Typo.body2" Class="mb-1"><b>Demo logins</b> — try them out, your data is a private sandbox.</MudText>
+					<MudText Typo="Typo.caption">Admin: <b>admin</b> / <b>admin</b> &nbsp;·&nbsp; User: <b>user</b> / <b>user</b></MudText>
+				</MudAlert>
 			</MudCardContent>
 			<MudCardActions Class="px-6 pb-6">
 				<MudButton ButtonType="ButtonType.Submit" Disabled="@_processing" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large">
