@@ -1,0 +1,45 @@
+name: Deploy to Raspberry Pi
+
+# Deploys the app to the self-hosted Raspberry Pi runner on every push to main.
+on:
+  push:
+    branches: [ main ]
+
+# Never run two deployments at once on the same Pi; cancel an in-flight one.
+concurrency:
+  group: deploy-raspberry-pi
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    env:
+      IMAGE_NAME: goalgetter        # docker image (from GoalGetter.dll / docker-compose)
+      CONTAINER_NAME: goalgetter    # matches container_name in docker-compose.yml
+      HOST_PORT: "8080"             # external port on the Raspberry Pi
+      CONTAINER_PORT: "8080"        # internal port from the Dockerfile (EXPOSE 8080)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t "$IMAGE_NAME:latest" .
+
+      - name: Stop and remove old container
+        run: |
+          docker stop "$CONTAINER_NAME" || true
+          docker rm "$CONTAINER_NAME" || true
+
+      - name: Run new container
+        run: |
+          docker run -d \
+            --name "$CONTAINER_NAME" \
+            --restart unless-stopped \
+            -p "$HOST_PORT:$CONTAINER_PORT" \
+            "$IMAGE_NAME:latest"
+
+      - name: Prune dangling images
+        # Free up the Pi's disk by dropping the now-untagged old image layers.
+        run: docker image prune -f
