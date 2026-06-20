@@ -7,36 +7,36 @@
 
 @if (tasks != null)
 {
-	<MudDataGrid Items="@tasks" Filterable="true" FilterMode="@_filterMode" Loading="@_loading" FilterCaseSensitivity="@_caseSensitivity" EditMode="DataGridEditMode.Cell">
+	<MudDataGrid Items="@tasks" Filterable="true" FilterMode="@_filterMode" Loading="@_loading" FilterCaseSensitivity="@_caseSensitivity" Hover="true">
 		<Columns>
 				<HierarchyColumn T="ProjectTask" />
 			<PropertyColumn Property="x => x.Name" Title="Name" Filterable="false" />
 			<PropertyColumn Property="x => x.Deadline" Format="dd.MM.yyyy" InitialDirection="SortDirection.Descending">
 			</PropertyColumn>
-			<TemplateColumn CellClass="d-flex justify-start" Filterable="false" Sortable="true" Title="Status" >
+			<TemplateColumn Filterable="false" Sortable="true" Title="Status">
 				<CellTemplate>
-						<MudSelect  T="ProgressStatus" @bind-Value="@context.Item.Status" Variant="Variant.Text" Required RequiredError="You must select a Status!!!">
+					<MudSelect T="ProgressStatus" Value="@context.Item.Status" ValueChanged="@(v => OnStatusChanged(context.Item, v))"
+							   Variant="Variant.Text" Margin="Margin.Dense" Dense="true" Required RequiredError="You must select a Status!!!">
 						@foreach (ProgressStatus status in Enum.GetValues(typeof(ProgressStatus)))
 						{
-								<MudSelectItem Value="status" Text="@(status.ToString())" />
-								OnChangedData(@context.Item);
+							<MudSelectItem Value="status" Text="@(status.ToString())" />
 						}
 					</MudSelect>
 				</CellTemplate>
 			</TemplateColumn>
 			<PropertyColumn Property="x => x.Description" Title="Description" Filterable="false" Sortable="false" />
-			<TemplateColumn CellClass="d-flex justify-start" Filterable="false" Sortable="true" SortBy="x => (x.AssignedPerson.person.Firstname + x.AssignedPerson.person.Lastname)" Title="Assigned Teammember">
+			<TemplateColumn Filterable="false" Sortable="true" SortBy="x => (x.AssignedPerson.person.Firstname + x.AssignedPerson.person.Lastname)" Title="Assigned Teammember">
 				<CellTemplate>
-					<MudItem @onclick="@((e) => OpenPersonCard(maxWidth, @context.Item.AssignedPerson.person))">
+					<div style="cursor: pointer;" @onclick="@((e) => OpenPersonCard(maxWidth, @context.Item.AssignedPerson.person))">
 						@if (@context.Item.AssignedPerson.person.AvatarPath != null)
 						{
-							<MudAvatar Image="@context.Item.AssignedPerson.person.AvatarPath"  />
+							<MudAvatar Image="@context.Item.AssignedPerson.person.AvatarPath" />
 						}
 						else
 						{
 							<MudAvatar Color="@context.Item.AssignedPerson.person.AvatarColor">@context.Item.AssignedPerson.person.Firstname.First()@context.Item.AssignedPerson.person.Lastname.First()</MudAvatar>
 						}
-					</MudItem>
+					</div>
             </CellTemplate>
 			</TemplateColumn>
 			<TemplateColumn CellClass="d-flex justify-end">
@@ -152,6 +152,13 @@
 	}
 
 	void HandleChange() => ChangeState(true);
+
+	// Persist only when the status actually changes (previously this ran on every render).
+	private void OnStatusChanged(ProjectTask task, ProgressStatus value)
+	{
+		task.Status = value;
+		OnChangedData(task);
+	}
 
 	void OnChangedData(ProjectTask task) => updateTaskUseCase.ExecuteAsync(task, proid);
 }
