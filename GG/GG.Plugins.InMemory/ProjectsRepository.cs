@@ -18,23 +18,18 @@ namespace GG.Plugins.InMemory
 		private List<Project> Projects = new List<Project>();
 		private List<Person> Contact = new List<Person>();
 
-		// Holds the (single) initial data load so reads can await it instead of
-		// racing the background load kicked off in the constructor.
-		private readonly Task _initialization;
-
 		public ProjectsRepository()
 		{
-			//Load Data
-			_initialization = LoadData();
+			// Seed this session's data synchronously so the in-memory lists are fully
+			// populated before any method runs. This avoids the load race (empty results
+			// on first request) and the deadlock risk that an async load would create when
+			// callers block on .Result inside the Blazor circuit's synchronization context.
+			LoadData();
 		}
 
 		//CRUD for Project Entitys
 		public async Task<StatusReport<IEnumerable<Project>>> GetProjectsByNameAsync(string name)
 		{
-			// Make sure the data has finished loading from disk before returning it,
-			// otherwise the first request can get an empty list while LoadData is still running.
-			await _initialization;
-
 			if (string.IsNullOrWhiteSpace(name))
 				return new StatusReport<IEnumerable<Project>>(
 						StatusState.Normal,
@@ -161,8 +156,6 @@ namespace GG.Plugins.InMemory
 
 		public async Task<StatusReport<IEnumerable<Person>>> GetPeopleByNameAsync(string name)
 		{
-			await _initialization;
-
 			IEnumerable<Person> result = GetPersonWithinPersonList(name, Contact).Result.Value;
 			return new StatusReport<IEnumerable<Person>>(
 					result.Any() ? StatusState.Normal : StatusState.Warning,
@@ -559,21 +552,26 @@ namespace GG.Plugins.InMemory
 							));
 		}
 
-		public async Task<StatusReport<EmptyVal>> LoadData()
+		// Synchronous on purpose: seeds the in-memory lists from the read-only dummy data
+		// on disk during construction, so every request sees fully loaded data.
+		public StatusReport<EmptyVal> LoadData()
 		{
-			Contact = JsonConvert.DeserializeObject<List<Person>>((await ReadTextFromFile("ApplicationData", "ContactList.json")).Value);
+			string dataDir = Path.Combine(Directory.GetCurrentDirectory(), "ApplicationData");
 
-			string directory = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "ApplicationData"), "projects");
+			Contact = JsonConvert.DeserializeObject<List<Person>>(File.ReadAllText(Path.Combine(dataDir, "ContactList.json")))
+					  ?? new List<Person>();
+
+			string directory = Path.Combine(dataDir, "projects");
 
 			foreach (var item in Directory.GetFiles(directory))
 			{
-				Project current = JsonConvert.DeserializeObject<Project>(await File.ReadAllTextAsync(Path.Combine(directory, item)));
+				Project current = JsonConvert.DeserializeObject<Project>(File.ReadAllText(item));
 
 				//restore links to people from contacts
 				if (current == null) throw new NullReferenceException("Faulty json could not be loaded");
 				foreach (var member in current.assignedTeam.members)
 				{
-					Person tmp = GetPersonById(member.PersonId).Result.Value;
+					Person tmp = Contact.FirstOrDefault(x => x.Id == member.PersonId);
 					if (tmp == null) throw new NullReferenceException($"Faulty json could not be loaded (Person with ID: {member.PersonId} does not exist)");
 					member.person = tmp;
 				}

@@ -35,7 +35,10 @@
 
 	private void RedirectToItemPage()
 	{
-		NavigationManager.NavigateTo($"/project/{project.Id}", true);
+		// SPA navigation (no forceLoad): keeps the current circuit/scope so the
+		// session's in-memory data is reused, avoids the login flash from a full
+		// reload, and lands on the project instead of bouncing back to the overview.
+		NavigationManager.NavigateTo($"/project/{project.Id}");
 	}
 
 	private static string StatusLabel(ProgressStatus status) => status.ToString().Replace("_", " ");
