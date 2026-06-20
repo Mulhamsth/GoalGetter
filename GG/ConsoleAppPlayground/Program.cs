@@ -1,4 +1,4 @@
-﻿using GG.CoreBusiness;
+using GG.CoreBusiness;
 using Libraries.DistanceAddressCalculator;
 
 namespace ConsoleAppPlayground
@@ -13,8 +13,8 @@ namespace ConsoleAppPlayground
 
         public static void TestGeolocator()
         {
-            Address a = Address.FindAddresses("Hammerweg 1 Zwettl")[0];
-            Address b = Address.FindAddresses("Alauntalstraße 29, 3500")[0];
+            Address a = Address.FindAddresses("Stephansplatz 1, 1010 Wien")[0];
+            Address b = Address.FindAddresses("Hauptplatz 1, 4020 Linz")[0];
 
             Console.WriteLine($"Distance from {a.ID} to {b.ID}");
             Console.WriteLine(Address.CalcDistance(a, b));
@@ -37,71 +37,71 @@ namespace ConsoleAppPlayground
                 Contact.Add(new Person()
                 {
                     Id = 1,
-                    Firstname = "Rainer",
-                    Lastname = "Winkler",
-                    Address = "DE, Emskirchen 91448, Altschauerberg 8",
+                    Firstname = "Sam",
+                    Lastname = "Hale",
+                    Address = "Stephansplatz 1, 1010 Wien",
                     AvatarPath = @"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-                    Email = "r.winkler@htlkrems.at"
+                    Email = "s.hale@example.com"
                 });
 
                 Contact.Add(new Person()
                 {
                     Id = 2,
-                    Firstname = "Ilse",
-                    Lastname = "Nigischer",
-                    Address = "AT Waidhofen a. T. 3830, Buxdihudenstraße 1",
+                    Firstname = "Nora",
+                    Lastname = "Berg",
+                    Address = "Hauptplatz 1, 4020 Linz",
                     AvatarPath = @"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-                    Email = "i.nigischer@htlkrems.at"
+                    Email = "n.berg@example.com"
                 });
 
                 Contact.Add(new Person()
                 {
                     Id = 3,
-                    Firstname = "Herwig",
-                    Lastname = "Macho",
-                    Address = "AT Zwettl 3910, Propstei 8",
+                    Firstname = "Clara",
+                    Lastname = "Frost",
+                    Address = "Hauptplatz 1, 8010 Graz",
                     AvatarPath = @"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-                    Email = "h.macho@htlkrems.at"
+                    Email = "c.frost@example.com"
                 });
 
                 Contact.Add(new Person()
                 {
                     Id = 4,
-                    Firstname = "Lukas",
-                    Lastname = "Kolinsky",
-                    Address = "AT, Zwettl 3910, Propstei 7",
+                    Firstname = "Alex",
+                    Lastname = "Stein",
+                    Address = "Domplatz 1, 3500 Krems an der Donau",
                     AvatarPath = @"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-                    Email = "lukas.kolinsky1@gmail.com"
+                    Email = "a.stein@example.com"
                 });
 
                 Contact.Add(new Person()
                 {
                     Id = 5,
-                    Firstname = "Mulham",
-                    Lastname = "Taylouni",
-                    Address = "AT, Gmünd 3950, Schremserstraße 69",
+                    Firstname = "Max",
+                    Lastname = "Mustermann",
+                    Address = "Residenzplatz 1, 5020 Salzburg",
                     AvatarPath = @"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-                    Email = "contact@taylouni.me"
+                    Email = "demo@example.com"
                 });
 
                 Contact.Add(new Person()
                 {
                     Id = 6,
-                    Firstname = "Christian",
-                    Lastname = "Wiesinger",
-                    Address = "AT, Rappottenstein 3911, Burgunderweg 109",
+                    Firstname = "Chris",
+                    Lastname = "Walden",
+                    Address = "Maria-Theresien-Straße 1, 6020 Innsbruck",
                     AvatarPath = @"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-                    Email = "contact@taylouni.me"
+                    Email = "demo@example.com"
                 });
 
                 Contact.Add(new Person()
                 {
                     Id = 7,
-                    Firstname = "Clemens",
-                    Lastname = "Schmid",
-                    Address = "AT, Zwettl 3910,Hammerweg 3",
+                    Firstname = "Jonas",
+                    Lastname = "Roth",
+                    Address = "Stephansplatz 1, 1010 Wien",
                     AvatarPath = @"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
-                    Email = "c.schmid@htlkrems.at"
+                    Email = "j.roth@example.com"
                 });
 
 

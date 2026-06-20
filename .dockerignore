@@ -1,0 +1,10 @@
+.git
+.github
+.vscode
+
+**/bin
+**/obj
+**/.vs
+
+goalgetter-handoff
+goalgetter-handoff.zip
