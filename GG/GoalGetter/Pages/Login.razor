@@ -7,33 +7,36 @@
 
 
 
-<EditForm Model="tmpusr">
-	<MudCard>
-
-		<MudCardHeader>
-			<CardHeaderContent>
-				<MudText Typo="Typo.h6">Login</MudText>
-			</CardHeaderContent>
-		</MudCardHeader>
-		<MudCardContent>
-			<MudTextField @bind-Value="tmpusr.UserName" Label="User Name" Variant="Variant.Outlined"></MudTextField>
-			<MudTextField @bind-Value="tmpusr.Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password"></MudTextField>
-		</MudCardContent>
-		<MudCardActions>
-			<MudButton Disabled="@_processing" OnClick="ProcessSomething" Variant="Variant.Filled" Color="Color.Info">
-				@if (_processing)
-				{
-					<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-					<MudText Class="ms-2">Processing</MudText>
-				}
-				else
-				{
-					<MudText>Login</MudText>
-				}
-			</MudButton>
-		</MudCardActions>
+<div class="d-flex justify-center" style="margin-top: 8vh;">
+	<MudCard Elevation="4" Style="width: 100%; max-width: 420px;">
+		<EditForm Model="tmpusr" OnValidSubmit="ProcessSomething">
+			<MudCardContent Class="pa-6">
+				<div class="d-flex flex-column align-center mb-4">
+					<MudImage Src="/images/Logo-GoalGetter.png" Width="56" Height="56" Alt="GoalGetter" Class="mb-2" />
+					<MudText Typo="Typo.h5">Welcome back</MudText>
+					<MudText Typo="Typo.body2" Color="Color.Secondary">Sign in to GoalGetter</MudText>
+				</div>
+				<MudTextField @bind-Value="tmpusr.UserName" Label="User Name" Variant="Variant.Outlined" Class="mb-3"
+							  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
+				<MudTextField @bind-Value="tmpusr.Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput"
+							  Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password" />
+			</MudCardContent>
+			<MudCardActions Class="px-6 pb-6">
+				<MudButton ButtonType="ButtonType.Submit" Disabled="@_processing" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large">
+					@if (_processing)
+					{
+						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+						<MudText Class="ms-2">Processing</MudText>
+					}
+					else
+					{
+						<MudText>Login</MudText>
+					}
+				</MudButton>
+			</MudCardActions>
+		</EditForm>
 	</MudCard>
-</EditForm>
+</div>
 
 
 @code {

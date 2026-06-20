@@ -3,27 +3,19 @@
 <MudNavMenu>
     <AuthorizeView Roles="Administrator, User">
     <Authorized>
-        <MudNavLink Href="/" Match="NavLinkMatch.All">Projects</MudNavLink>
-        <MudNavLink Href="/people" Match="NavLinkMatch.Prefix">People</MudNavLink>
-        <MudNavLink OnClick="Logout" Match="NavLinkMatch.Prefix">Logout</MudNavLink>
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Projects</MudNavLink>
+        <MudNavLink Href="/people" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">People</MudNavLink>
+        <MudDivider Class="my-2" />
+        <MudNavLink OnClick="Logout" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Logout">Logout</MudNavLink>
     </Authorized>
     <NotAuthorized>
-        <MudNavLink Href="/login" Match="NavLinkMatch.Prefix">Login</MudNavLink>
+        <MudNavLink Href="/login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
     </NotAuthorized>
 </AuthorizeView>
 </MudNavMenu>
 
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-
     private async Task Logout()
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;

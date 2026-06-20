@@ -9,7 +9,6 @@ using GG.UseCases.Tasks;
 using GG.UseCases.Tasks.Interfaces;
 using GG.UseCases.Team;
 using GG.UseCases.Team.Interfaces;
-using GoalGetter.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;

@@ -18,15 +18,23 @@ namespace GG.Plugins.InMemory
 		private List<Project> Projects = new List<Project>();
 		private List<Person> Contact = new List<Person>();
 
+		// Holds the (single) initial data load so reads can await it instead of
+		// racing the background load kicked off in the constructor.
+		private readonly Task _initialization;
+
 		public ProjectsRepository()
 		{
 			//Load Data
-			var status = LoadData();
+			_initialization = LoadData();
 		}
 
 		//CRUD for Project Entitys
 		public async Task<StatusReport<IEnumerable<Project>>> GetProjectsByNameAsync(string name)
 		{
+			// Make sure the data has finished loading from disk before returning it,
+			// otherwise the first request can get an empty list while LoadData is still running.
+			await _initialization;
+
 			if (string.IsNullOrWhiteSpace(name))
 				return new StatusReport<IEnumerable<Project>>(
 						StatusState.Normal,
@@ -153,6 +161,8 @@ namespace GG.Plugins.InMemory
 
 		public async Task<StatusReport<IEnumerable<Person>>> GetPeopleByNameAsync(string name)
 		{
+			await _initialization;
+
 			IEnumerable<Person> result = GetPersonWithinPersonList(name, Contact).Result.Value;
 			return new StatusReport<IEnumerable<Person>>(
 					result.Any() ? StatusState.Normal : StatusState.Warning,

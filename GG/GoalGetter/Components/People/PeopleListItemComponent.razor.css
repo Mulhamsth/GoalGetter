@@ -1,0 +1,9 @@
+.person-card {
+    cursor: pointer;
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.person-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--mud-elevation-8);
+}

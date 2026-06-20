@@ -2,36 +2,40 @@
 @inject IDeletePersonUseCase deletePersonUseCase
 @inject ISnackbar Snackbar
 
-<div class="mb-5" style="margin-top: 20px">
-	<MudContainer MaxWidth="MaxWidth.Medium">
-		<MudCard @onclick="@((e) => OpenPersonCard(maxWidth))">
-			<MudCardHeader>
-				<CardHeaderContent>
-					<h2>@person.Firstname @person.Lastname</h2>
-				</CardHeaderContent>
-				<CardHeaderAvatar>
-					@if (person.AvatarPath != null)
-					{
-						<MudAvatar Image="@person.AvatarPath"></MudAvatar>
-					}
-					else
-					{
-						<MudAvatar Color="@person.AvatarColor">@person.Firstname.First()@person.Lastname.First()</MudAvatar>
-
-					}
-				</CardHeaderAvatar>
-				<CardHeaderActions>
-					<MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => DeletePeron(person, person.Firstname, person.Lastname))"></MudIconButton>
-				</CardHeaderActions>
-			</MudCardHeader>
-			<MudCardContent>
-				<MudText>@person.Address</MudText>
-				<MudText>@person.Email</MudText>
-			</MudCardContent>
-		</MudCard>
-	</MudContainer>
-
-</div>
+<MudCard Class="person-card d-flex flex-column" Style="height: 100%;" Elevation="2" @onclick="@(() => OpenPersonCard(maxWidth))">
+	<MudCardHeader>
+		<CardHeaderAvatar>
+			@if (person.AvatarPath != null)
+			{
+				<MudAvatar Image="@person.AvatarPath" />
+			}
+			else
+			{
+				<MudAvatar Color="@person.AvatarColor">@person.Firstname.First()@person.Lastname.First()</MudAvatar>
+			}
+		</CardHeaderAvatar>
+		<CardHeaderContent>
+			<MudText Typo="Typo.h6" Class="text-truncate">@person.Firstname @person.Lastname</MudText>
+		</CardHeaderContent>
+		<CardHeaderActions>
+			<div @onclick:stopPropagation="true">
+				<MudTooltip Text="Remove">
+					<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => DeletePeron(person, person.Firstname, person.Lastname))" />
+				</MudTooltip>
+			</div>
+		</CardHeaderActions>
+	</MudCardHeader>
+	<MudCardContent Class="flex-grow-1">
+		<div class="d-flex align-center mb-1">
+			<MudIcon Icon="@Icons.Material.Outlined.LocationOn" Size="Size.Small" Color="Color.Secondary" Class="mr-2" />
+			<MudText Typo="Typo.body2" Color="Color.Secondary" Class="text-truncate">@person.Address</MudText>
+		</div>
+		<div class="d-flex align-center">
+			<MudIcon Icon="@Icons.Material.Outlined.Email" Size="Size.Small" Color="Color.Secondary" Class="mr-2" />
+			<MudText Typo="Typo.body2" Color="Color.Secondary" Class="text-truncate">@person.Email</MudText>
+		</div>
+	</MudCardContent>
+</MudCard>
 @code {
 	[Parameter]
 	public Person person { get; set; }

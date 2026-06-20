@@ -7,18 +7,15 @@
 <AuthorizeView>
 	<Authorized>
 
-		<MudContainer Class="justify-content-center">
-			<div class="row">
-				<div class="col-md-6 d-flex">
-					<MudButton OnClick="@((e) => OpenDialog(maxWidth))" Variant="Variant.Filled" DisableElevation="true" Style="background-color: #0088d3; color: white; max-height: 40px; margin-right: 40px; margin-top: 8px" Color="Color.Primary">
-						+ Person
-					</MudButton>
-					<Searchbar OnSearchterm="OnTermSearch" />
-				</div>
-			</div>
-		</MudContainer>
+		<MudText Typo="Typo.h4" Class="mb-4">Team</MudText>
+		<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Class="mb-4 flex-wrap">
+			<Searchbar OnSearchterm="OnTermSearch" />
+			<MudButton OnClick="@(() => OpenDialog(maxWidth))" Variant="Variant.Filled" Color="Color.Primary"
+					   StartIcon="@Icons.Material.Filled.PersonAdd" DisableElevation="true" Class="flex-shrink-0">
+				Add Member
+			</MudButton>
+		</MudStack>
 
-		@*@*Hier kommen die Karten für jeder Projekt*@
 		<TeamListComponent proid="@proid" searchTerm="@searchterm" reloadFlag="@reloadFlag" />
 	</Authorized>
 	<NotAuthorized>

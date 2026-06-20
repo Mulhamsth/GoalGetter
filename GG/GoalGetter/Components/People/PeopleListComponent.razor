@@ -1,20 +1,37 @@
-﻿@inject IViewPeopleByNameUseCase viewPeopleByNameUseCase
+@inject IViewPeopleByNameUseCase viewPeopleByNameUseCase
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
-@*Hier kommen die Karten für jeder Projekt*@
 
-
-@if (people != null)
+@if (_loading)
 {
-	@foreach (var person in people)
-	{
-		<PeopleListItemComponent person="@person"  OnPersonDeleted="update"/>
-	}
+	<div class="d-flex justify-center align-center mt-12" style="min-height: 40vh;">
+		<MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+	</div>
+}
+else if (people == null || people.Count == 0)
+{
+	<MudPaper Class="d-flex flex-column align-center justify-center pa-12 mt-6" Elevation="0" Outlined="true">
+		<MudIcon Icon="@Icons.Material.Outlined.PersonOff" Size="Size.Large" Class="mb-3" Color="Color.Default" />
+		<MudText Typo="Typo.h6">No people found</MudText>
+		<MudText Typo="Typo.body2" Color="Color.Secondary">Add a person to get started.</MudText>
+	</MudPaper>
+}
+else
+{
+	<MudGrid Spacing="2" Class="mt-2">
+		@foreach (var person in people)
+		{
+			<MudItem xs="12" sm="6" md="4">
+				<PeopleListItemComponent person="@person" OnPersonDeleted="update" />
+			</MudItem>
+		}
+	</MudGrid>
 }
 
 
 @code {
 	private List<Person> people;
+	private bool _loading = true;
 
 	[Parameter]
 	public string searchTerm { get; set; }
@@ -24,15 +41,14 @@
 
 	protected override async Task OnParametersSetAsync()
 	{
-		ChangeState();
+		await ChangeState();
 	}
 
-
-	async Task ChangeState(bool Update_Screen = false)
+	async Task ChangeState(bool updateScreen = false)
 	{
-		people = viewPeopleByNameUseCase.ExecuteAsync(this.searchTerm).Result.Value.ToList();
+		_loading = true;
 
-		var result = viewPeopleByNameUseCase.ExecuteAsync(this.searchTerm).Result;
+		var result = await viewPeopleByNameUseCase.ExecuteAsync(this.searchTerm);
 
 		if (result.Value != null)
 			people = result.Value.ToList();
@@ -42,8 +58,11 @@
 			NavigationManager.NavigateTo("/");
 		}
 
-		if (Update_Screen)
+		_loading = false;
+
+		if (updateScreen)
 			StateHasChanged();
 	}
-	void update() => ChangeState(true);
+
+	void update() => _ = ChangeState(true);
 }

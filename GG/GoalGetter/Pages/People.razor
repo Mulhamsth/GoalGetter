@@ -4,18 +4,15 @@
 
 <AuthorizeView>
     <Authorized>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6 d-flex align-items-center">
-                    <MudButton Variant="Variant.Filled" DisableElevation="true" Style="max-height: 40px; margin-top: 7px; background-color: #0088d3; color: white; margin-right: 3vw" OnClick="@((e) => OpenDialog(maxWidth))">
-                        + Person
-                    </MudButton>
-                    <Searchbar OnSearchterm="OnTermSearch" />
-                </div>
-            </div>
-        </div>
+        <MudText Typo="Typo.h4" Class="mb-4">People</MudText>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Class="mb-2 flex-wrap">
+            <Searchbar OnSearchterm="OnTermSearch" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true"
+                       StartIcon="@Icons.Material.Filled.PersonAdd" Class="flex-shrink-0" OnClick="@(() => OpenDialog(maxWidth))">
+                Add Person
+            </MudButton>
+        </MudStack>
 
-        @*Hier kommen die Karten für jeder Projekt*@
         <PeopleListComponent searchTerm="@searchterm" reloadFlag="@reloadFlag" />
     </Authorized>
     <NotAuthorized>

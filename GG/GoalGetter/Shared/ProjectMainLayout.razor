@@ -4,32 +4,33 @@
 
 <PageTitle>GoalGetter</PageTitle>
 
-<MudThemeProvider @bind-IsDarkMode="@themeService.IsDarkMode" />
-<MudDialogProvider />
+<MudThemeProvider Theme="GoalGetterTheme.Theme" @bind-IsDarkMode="@themeService.IsDarkMode" />
+<MudDialogProvider CloseButton="true" MaxWidth="MaxWidth.Small" FullWidth="true" />
 <MudSnackbarProvider />
 
 <MudLayout>
-    <!-- Leiste oben - Background: #0088d3 -->
-    <MudAppBar Elevation="0" Style="background-color: #0088d3">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudToggleIconButton @bind-Toggled="@themeService.IsDarkMode"
-                             Icon="@Icons.Material.Filled.DarkMode" Color="@Color.Dark"
-                             ToggledIcon="@Icons.Material.Filled.WbSunny" ToggledColor="@Color.Surface" ToggledTitle="On" />
-
-        <div style="display: flex; justify-content: flex-end; align-items: center; flex-grow: 1;">
-            <MudImage Src="images/logo-goalgetter.png" Width="50" Height="50" Alt="GG-Logo" Style="border: none;" />
-        </div>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle" aria-label="Toggle navigation" />
+        <MudLink Href="/" Underline="Underline.None" Class="d-flex align-center ml-2" Style="color: inherit;">
+            <MudImage Src="/images/Logo-GoalGetter.png" Width="34" Height="34" Alt="GoalGetter" />
+            <MudText Typo="Typo.h6" Class="ml-2 d-none d-sm-flex">GoalGetter</MudText>
+        </MudLink>
+        <MudSpacer />
+        <MudTooltip Text="@(themeService.IsDarkMode ? "Switch to light mode" : "Switch to dark mode")">
+            <MudIconButton Icon="@(themeService.IsDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                           Color="Color.Inherit" OnClick="@(() => themeService.IsDarkMode = !themeService.IsDarkMode)" />
+        </MudTooltip>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-        <MudDrawerHeader>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Responsive">
+        <MudDrawerHeader Class="d-flex align-center">
             <MudText Typo="Typo.h6">
-                <a @onclick="GoToRootPage" style="cursor: pointer; text-decoration: none;">GoalGetter</a>
+                <MudLink Href="/" Underline="Underline.None" Style="color: inherit; cursor: pointer;">GoalGetter</MudLink>
             </MudText>
         </MudDrawerHeader>
         <ProjectNavMenu ProId="@ID" />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-5 pt-5">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-6">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -54,10 +55,4 @@
     {
         _drawerOpen = !_drawerOpen;
     }
-
-    void GoToRootPage()
-    {
-        NavigationManager.NavigateTo("/");
-    }
-
 }
