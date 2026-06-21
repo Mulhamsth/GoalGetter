@@ -45,6 +45,13 @@ Then open the printed `https://localhost:<port>` URL.
 > The demo credentials and all seeded contacts are placeholder data for local
 > demonstration only — see note below.
 
+## Demo video
+
+<video src="./demo.mov" controls width="100%"></video>
+
+If the inline player does not render in your viewer, open the video directly:
+[demo.mov](demo.mov).
+
 ## Demo data
 
 All people, emails, phone numbers, photos, and addresses in this repository are
